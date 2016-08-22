@@ -1,4 +1,4 @@
-package com.example.salehe.volleydemo;
+package com.example.salehe.volleydemo.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +15,7 @@ public class MySingleton {
     private ImageLoader mImageLoader;
     private static Context mCtx;
 
+
     private MySingleton(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
@@ -22,7 +23,7 @@ public class MySingleton {
         mImageLoader = new ImageLoader(mRequestQueue,
                 new ImageLoader.ImageCache() {
                     private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
+                            cache = new LruCache<String, Bitmap>((int) ((Runtime.getRuntime().maxMemory()/1024)/8));
 
                     @Override
                     public Bitmap getBitmap(String url) {
