@@ -1,5 +1,6 @@
 package com.example.salehe.volleydemo.activities;
 
+import android.content.ComponentName;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.salehe.volleydemo.Adapter.MySingleton;
 import com.example.salehe.volleydemo.Adapter.ProductAdapter;
+import com.example.salehe.volleydemo.MyService.MyService;
 import com.example.salehe.volleydemo.R;
 import com.example.salehe.volleydemo.extras.Keys;
 import com.example.salehe.volleydemo.extras.UrlEndpoint;
@@ -28,9 +30,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import me.tatarka.support.job.JobInfo;
+import me.tatarka.support.job.JobScheduler;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String STATE_PRODUCT = "state_product";
+    private static final int JOB_ID =100 ;
+    private JobScheduler jobscheduler;
     TextView volleyError;
 
     RecyclerView recyclerView;
@@ -42,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        jobscheduler = JobScheduler.getInstance(this);
+        constuctJob();
 
         volleyError = (TextView) findViewById(R.id.volleyError);
         recyclerView = (RecyclerView) findViewById(R.id.listView);
@@ -115,6 +124,13 @@ public class MainActivity extends AppCompatActivity {
 
         }/*end if statement*/
         return arrayList;
+    }
+
+    private void constuctJob(){
+        JobInfo.Builder builder =new JobInfo.Builder(JOB_ID,new ComponentName(this, MyService.class));
+        builder.setPeriodic(2000).setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED).setPersisted(true);
+        jobscheduler.schedule(builder.build());
+
     }
 
     @Override
